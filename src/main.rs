@@ -9,7 +9,8 @@ struct Args {
     subcommand: commands::SubCommand,
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Args = Args::parse();
 
     let result = match args.subcommand {};
