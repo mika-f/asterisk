@@ -48,9 +48,9 @@ pub struct Args {
 pub async fn exec(args: Args) -> Result<()> {
     if args.is_interactive || args.name.is_none() {
         return interactive_add().await;
+    } else {
+        return arguments_add(args).await;
     }
-
-    Ok(())
 }
 
 async fn interactive_add() -> Result<()> {
@@ -82,6 +82,24 @@ async fn interactive_add() -> Result<()> {
         let hooks = Hooks::new(pre, post);
         function.set_hooks(Some(hooks));
     }
+
+    functions.append(function);
+    functions.save()?;
+
+    Ok(())
+}
+
+async fn arguments_add(args: Args) -> Result<()> {
+    let mut functions = Functions::load()?;
+
+    let mut function = Function::new(&args.name.unwrap(), &args.command.unwrap());
+    function.set_description(args.description);
+    function.set_wrap(args.wrap);
+    function.set_condition(args.condition);
+    function.set_shell(args.shell);
+
+    let hooks = Hooks::new(args.pre_hook, args.post_hook);
+    function.set_hooks(Some(hooks));
 
     functions.append(function);
     functions.save()?;
