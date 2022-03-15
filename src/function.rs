@@ -9,7 +9,7 @@ use toml;
 
 use crate::error::{Error, Result};
 use crate::hooks::Hooks;
-use crate::shells::Shell;
+use crate::shells::{Shell, ShellExecutable};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Function {
@@ -118,6 +118,47 @@ impl Function {
     }
 
     pub async fn execute(&self, args: Vec<String>) -> Result<()> {
+        let command = self.command.clone();
+        let shell: Box<dyn ShellExecutable> = Box::new(self.get_shell().unwrap_or(Shell::Default));
+
+        if let Some(hooks) = self.get_hooks() {
+            let r = match hooks.get_pre() {
+                Some(hook) => shell.exec(&hook).is_ok(),
+                None => true,
+            };
+
+            if !r {
+                return Err(Error::CommandPreHookFailureError(command));
+            }
+        }
+
+        if let Some(condition) = self.get_condition() {
+            let r = shell.exec(&condition).is_ok();
+
+            if !r {
+                return Err(Error::CommandConditionFailureError(command));
+            }
+        }
+
+        let mut run_command = vec![self.command.to_owned()];
+        run_command.extend(args);
+
+        let s = shell.exec(&run_command.join(" "));
+        if !s.is_ok() {
+            return Err(Error::CommandExecutionFailureError(command));
+        }
+
+        if let Some(hooks) = self.get_hooks() {
+            let r = match hooks.get_post() {
+                Some(hook) => shell.exec(&hook).is_ok(),
+                None => true,
+            };
+
+            if !r {
+                return Err(Error::CommandPostHookFailureError(command));
+            }
+        }
+
         Ok(())
     }
 }

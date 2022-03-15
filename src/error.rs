@@ -13,6 +13,18 @@ pub enum Error {
     CommandNotFoundError(String),
 
     #[error("{0}")]
+    CommandPreHookFailureError(String),
+
+    #[error("{0}")]
+    CommandConditionFailureError(String),
+
+    #[error("{0}")]
+    CommandExecutionFailureError(String),
+
+    #[error("{0}")]
+    CommandPostHookFailureError(String),
+
+    #[error("{0}")]
     InquireError(InquireError),
 
     #[error("{0}")]
