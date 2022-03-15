@@ -7,7 +7,11 @@ pub enum SubCommand {
 
     #[clap()]
     Edit(edit::Args),
+
+    #[clap()]
+    Exec(exec::Args),
 }
 
 pub mod add;
 pub mod edit;
+pub mod exec;

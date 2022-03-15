@@ -10,6 +10,9 @@ pub enum Error {
     CommandExecutionError(std::io::Error),
 
     #[error("{0}")]
+    CommandNotFoundError(String),
+
+    #[error("{0}")]
     InquireError(InquireError),
 
     #[error("{0}")]

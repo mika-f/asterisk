@@ -111,6 +111,10 @@ impl Function {
     pub fn get_tags(&self) -> Vec<String> {
         self.tags.clone()
     }
+
+    pub async fn execute(&self, args: Vec<String>) -> Result<()> {
+        Ok(())
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -156,6 +160,18 @@ impl Functions {
     pub fn delete(&mut self, function: Function) -> () {
         self.functions
             .retain(|f| f.get_name() != function.get_name());
+    }
+
+    pub fn get(&self, name: &str) -> Option<&Function> {
+        self.functions
+            .iter()
+            .find(|f| f.get_name() == name || f.get_wrap() == None)
+    }
+
+    pub fn get_wrap(&self, name: &str, wrap: &str) -> Option<&Function> {
+        self.functions
+            .iter()
+            .find(|f| f.get_name() == name && f.get_wrap() == Some(wrap.to_owned()))
     }
 
     pub fn save(&self) -> Result<()> {
