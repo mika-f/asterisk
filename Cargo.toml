@@ -1,8 +1,22 @@
 [package]
-name = "asterisk"
-version = "0.1.0"
+authors = ["Natsune Mochizuki <me@natsuneko.cat>"]
+categories = ["command-line-utilities"]
+description = "simple function manager for command-line"
 edition = "2021"
+homepage = "https://github.com/mika-f/asterisk"
+license = "MIT OR Apache-2.0"
+name = "asterisk"
+readme = "README.md"
+repository = "https://github.com/mika-f/asterisk"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "ast"
+path = "src/main.rs"
+
 [dependencies]
+clap = {version = "3", features = ["suggestions", "color", "derive"]}
+serde = {version = "1", features = ["derive"]}
+toml = "0"
