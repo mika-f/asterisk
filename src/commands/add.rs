@@ -6,8 +6,7 @@ use crate::prompt;
 #[derive(Parser)]
 #[clap(group(ArgGroup::new("non-interactive")
     .args(&["name", "command"])
-    .requires("name")
-    .requires("command")
+    .requires_all(&["name", "command"])
     .multiple(true)
     .conflicts_with("is-interactive"))
 )]
