@@ -1,5 +1,6 @@
 use dirs;
 use serde_derive::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::fs;
 use std::path::PathBuf;
 use std::str::FromStr;
@@ -106,6 +107,10 @@ impl Function {
 
     pub fn append_tag(&mut self, tag: String) -> () {
         self.tags.push(tag);
+    }
+
+    pub fn remove_tag(&mut self, tag: String) -> () {
+        self.tags.retain(|f| f.cmp(&tag) != Ordering::Equal);
     }
 
     pub fn get_tags(&self) -> Vec<String> {
