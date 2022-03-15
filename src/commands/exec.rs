@@ -23,7 +23,7 @@ pub async fn exec(args: Args) -> Result<()> {
             }
 
             let subcommand = args.extra.get(0).unwrap();
-            match functions.get_wrap(&args.name, subcommand) {
+            match functions.get_wrap(subcommand, &args.name) {
                 Some(function) => {
                     splice = 1;
                     function
