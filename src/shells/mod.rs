@@ -48,3 +48,16 @@ pub enum Shell {
 pub trait ShellExecutable {
     fn exec(&self, command: &str) -> Result<ExitStatus>;
 }
+
+impl ShellExecutable for Shell {
+    fn exec(&self, command: &str) -> Result<ExitStatus> {
+        match self {
+            Shell::Bash => bash::exec(command),
+            Shell::Cmd => cmd::exec(command),
+            Shell::Default => default::exec(command),
+            Shell::Fish => fish::exec(command),
+            Shell::PowerShell => pwsh::exec(command),
+            Shell::Zsh => zsh::exec(command),
+        }
+    }
+}
