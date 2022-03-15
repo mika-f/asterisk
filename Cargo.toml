@@ -18,6 +18,7 @@ path = "src/main.rs"
 
 [dependencies]
 clap = {version = "3", features = ["suggestions", "color", "derive"]}
+inquire = {version = "0", features = ["editor"]}
 serde = {version = "1", features = ["derive"]}
 thiserror = "1"
 tokio = {version = "1", features = ["full"]}

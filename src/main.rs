@@ -1,6 +1,8 @@
 use clap::Parser;
 
 mod commands;
+mod error;
+mod prompt;
 
 #[derive(Parser)]
 #[clap(author, about, version)]
@@ -13,7 +15,9 @@ struct Args {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Args = Args::parse();
 
-    let result = match args.subcommand {};
+    let result = match args.subcommand {
+        commands::SubCommand::Add(args) => commands::add::exec(args).await,
+    };
 
     match result {
         Ok(()) => Ok(()),

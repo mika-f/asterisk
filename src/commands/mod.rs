@@ -2,5 +2,8 @@ use clap::Parser;
 
 #[derive(Parser)]
 pub enum SubCommand {
-    Add,
+    #[clap()]
+    Add(add::Args),
 }
+
+pub mod add;

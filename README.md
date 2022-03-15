@@ -51,9 +51,9 @@ add a new function to asterisk:
 $ ast add
 
 # command line
-$ ast add
-  --command "rg"
-  --name search
+$ ast add \
+  --command "rg" \
+  --name search \
   --description "search expression with ripgrep
 ```
 
