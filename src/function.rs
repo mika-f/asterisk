@@ -118,7 +118,7 @@ impl Function {
     }
 
     pub async fn execute(&self, args: Vec<String>) -> Result<()> {
-        let command = self.command.clone();
+        let command = self.get_command().clone();
         let shell: Box<dyn ShellExecutable> = Box::new(self.get_shell().unwrap_or(Shell::Default));
 
         if let Some(hooks) = self.get_hooks() {
@@ -140,7 +140,7 @@ impl Function {
             }
         }
 
-        let mut run_command = vec![self.command.to_owned()];
+        let mut run_command = vec![self.get_command().to_owned()];
         run_command.extend(args);
 
         let s = shell.exec(&run_command.join(" "));
