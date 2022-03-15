@@ -1,4 +1,6 @@
-use inquire::{required, Confirm, Editor, Text};
+use inquire::{required, Confirm, Editor, Select, Text};
+use std::fmt::Display;
+use strum::IntoEnumIterator;
 
 use crate::error::{Error, Result};
 
@@ -42,6 +44,7 @@ pub fn optional_text(message: &str) -> Result<Option<String>> {
     }
 }
 
+#[cfg(not(windows))]
 pub fn editor(message: &str) -> Result<String> {
     match Editor::new(message)
         .with_validator(required!("this field is required"))
@@ -57,6 +60,21 @@ pub fn editor(message: &str) -> Result<String> {
         })
         .prompt()
     {
+        Ok(value) => Ok(value),
+        Err(err) => Err(Error::InquireError(err)),
+    }
+}
+
+// Windows might not work correctly editor, so we just return the text
+#[cfg(windows)]
+pub fn editor(message: &str) -> Result<String> {
+    text(message)
+}
+
+pub fn select<T: IntoEnumIterator + Display>(message: &str) -> Result<T> {
+    let items = T::iter().collect::<Vec<_>>();
+
+    match Select::new(message, items).prompt() {
         Ok(value) => Ok(value),
         Err(err) => Err(Error::InquireError(err)),
     }

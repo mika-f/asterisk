@@ -2,7 +2,10 @@ use clap::Parser;
 
 mod commands;
 mod error;
+mod function;
+mod hooks;
 mod prompt;
+mod shells;
 
 #[derive(Parser)]
 #[clap(author, about, version)]

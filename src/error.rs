@@ -7,7 +7,16 @@ pub enum Error {
     Args(String),
 
     #[error("{0}")]
+    CommandExecutionError(std::io::Error),
+
+    #[error("{0}")]
     InquireError(InquireError),
+
+    #[error("{0}")]
+    OsError(String),
+
+    #[error("{0}")]
+    ShellNotFound(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
