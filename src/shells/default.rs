@@ -10,10 +10,10 @@ pub fn exec(command: &str) -> Result<ExitStatus> {
     }
 }
 
-#[cfg(any(linux, macos))]
-pub fn exec(command: &str) -> Result<()> {
+#[cfg(any(target_os = "macos", target_os = "linux"))]
+pub fn exec(command: &str) -> Result<ExitStatus> {
     match Command::new("bash").arg("-c").arg(command).status() {
-        Ok(status) => Ok(()),
+        Ok(status) => Ok(status),
         Err(e) => return Err(Error::CommandExecutionError(e)),
     }
 }
