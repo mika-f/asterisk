@@ -1,7 +1,9 @@
 use clap::Parser;
+use std::process::exit;
 
 use crate::error::{Error, Result};
 use crate::function::Functions;
+use crate::shells::{Shell, ShellExecutable};
 
 #[derive(Parser)]
 pub struct Args {
@@ -28,7 +30,14 @@ pub async fn exec(args: Args) -> Result<()> {
                     splice = 1;
                     function
                 }
-                None => return Err(Error::CommandNotFoundError(args.name)),
+                None => {
+                    // pass-through commands to base
+                    let command = format!("{} {}", args.name, args.extra.join(" "));
+                    match Shell::Default.exec(&command) {
+                        Ok(status) => exit(status.code().unwrap()),
+                        Err(e) => return Err(e),
+                    };
+                }
             }
         }
     };
