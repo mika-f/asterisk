@@ -46,10 +46,22 @@ pub enum Shell {
 }
 
 pub trait ShellExecutable {
+    fn alias(&self, left: &str, right: &str) -> Option<String>;
     fn exec(&self, command: &str) -> Result<ExitStatus>;
 }
 
 impl ShellExecutable for Shell {
+    fn alias(&self, left: &str, right: &str) -> Option<String> {
+        match self {
+            Shell::Bash => bash::alias(left, right),
+            Shell::Cmd => cmd::alias(left, right),
+            Shell::Default => default::alias(left, right),
+            Shell::Fish => fish::alias(left, right),
+            Shell::PowerShell => pwsh::alias(left, right),
+            Shell::Zsh => zsh::alias(left, right),
+        }
+    }
+
     fn exec(&self, command: &str) -> Result<ExitStatus> {
         match self {
             Shell::Bash => bash::exec(command),

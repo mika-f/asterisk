@@ -1,19 +1,24 @@
-use std::process::{Command, ExitStatus};
+use std::process::ExitStatus;
 
-use crate::error::{Error, Result};
+use crate::error::Result;
+use crate::shells::{bash, cmd};
+
+#[cfg(target_os = "windows")]
+pub fn alias(left: &str, right: &str) -> Option<String> {
+    cmd::alias(left, right)
+}
+
+#[cfg(any(target_os = "macos", target_os = "linux"))]
+pub fn alias(left: &str, right: &str) -> Option<String> {
+    bash::alias(left, right)
+}
 
 #[cfg(target_os = "windows")]
 pub fn exec(command: &str) -> Result<ExitStatus> {
-    match Command::new("cmd").arg("/C").arg(command).status() {
-        Ok(status) => Ok(status),
-        Err(e) => return Err(Error::CommandExecutionError(e)),
-    }
+    cmd::exec(command)
 }
 
 #[cfg(any(target_os = "macos", target_os = "linux"))]
 pub fn exec(command: &str) -> Result<ExitStatus> {
-    match Command::new("bash").arg("-c").arg(command).status() {
-        Ok(status) => Ok(status),
-        Err(e) => return Err(Error::CommandExecutionError(e)),
-    }
+    bash::exec(command)
 }
