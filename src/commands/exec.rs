@@ -1,7 +1,7 @@
 use clap::Parser;
 use std::process::exit;
 
-use crate::error::{Error, Result};
+use crate::error::Result;
 use crate::function::Functions;
 use crate::shells::{Shell, ShellExecutable};
 
@@ -21,7 +21,12 @@ pub async fn exec(args: Args) -> Result<()> {
         Some(function) => function,
         None => {
             if args.extra.is_empty() {
-                return Err(Error::CommandNotFoundError(args.name));
+                // pass-through
+                let command = format!("{}", args.name);
+                match Shell::Default.exec(&command) {
+                    Ok(status) => exit(status.code().unwrap()),
+                    Err(e) => return Err(e),
+                };
             }
 
             let subcommand = args.extra.get(0).unwrap();
