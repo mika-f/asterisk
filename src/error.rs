@@ -4,9 +4,6 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("{0}")]
-    Args(String),
-
-    #[error("{0}")]
     CommandExecutionError(std::io::Error),
 
     #[error("{0}")]
