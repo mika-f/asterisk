@@ -1,4 +1,5 @@
 use clap::Parser;
+use std::collections::HashSet;
 use std::str::FromStr;
 
 use crate::error::{Error, Result};
@@ -19,13 +20,18 @@ pub async fn exec(args: Args) -> Result<()> {
     };
 
     let functions = Functions::load()?;
+    let mut aliases = HashSet::<String>::new();
 
     for function in functions.into_iter() {
         let alias = function.export(shell);
         match alias {
-            Some(alias) => println!("{}", alias),
-            None => {}
-        }
+            Some(alias) => aliases.insert(alias),
+            None => true,
+        };
+    }
+
+    for alias in aliases.iter() {
+        println!("{}", alias);
     }
 
     Ok(())
