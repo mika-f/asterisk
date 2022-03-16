@@ -10,8 +10,12 @@ pub enum SubCommand {
 
     #[clap()]
     Exec(exec::Args),
+
+    #[clap()]
+    Init(init::Args),
 }
 
 pub mod add;
 pub mod edit;
 pub mod exec;
+pub mod init;

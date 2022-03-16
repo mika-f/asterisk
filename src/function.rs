@@ -11,7 +11,7 @@ use crate::error::{Error, Result};
 use crate::hooks::Hooks;
 use crate::shells::{Shell, ShellExecutable};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Function {
     name: String,
 
@@ -161,11 +161,25 @@ impl Function {
 
         Ok(())
     }
+
+    pub fn export(&self, shell: Shell) -> Option<String> {
+        if self.get_wrap().is_none() {
+            let command = format!("ast exec {}", self.get_name());
+            shell.alias(&self.get_name(), &command)
+        } else {
+            let wrap = self.get_wrap().unwrap();
+            let command = format!("ast exec {} -- ", &wrap);
+            shell.alias(&wrap, &command)
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Functions {
     functions: Vec<Function>,
+
+    #[serde(skip)]
+    cur: usize,
 }
 
 impl Functions {
@@ -187,7 +201,10 @@ impl Functions {
     }
 
     fn none() -> Self {
-        Functions { functions: vec![] }
+        Functions {
+            functions: vec![],
+            cur: 0,
+        }
     }
 
     pub fn path() -> Result<PathBuf> {
@@ -237,6 +254,20 @@ impl Functions {
         match fs::write(&path, toml_str) {
             Ok(_) => Ok(()),
             Err(e) => Err(Error::OsError(format!("could not write file: {}", e))),
+        }
+    }
+}
+
+impl Iterator for Functions {
+    type Item = Function;
+
+    fn next(&mut self) -> std::option::Option<<Self as std::iter::Iterator>::Item> {
+        let item = self.functions.get(self.cur);
+        self.cur += 1;
+
+        match item {
+            Some(item) => Some(item.clone()),
+            None => None,
         }
     }
 }

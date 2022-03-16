@@ -32,16 +32,16 @@ initialize or reload asterisk:
 
 ```bash
 # bash
-$ eval $(ast init - bash)
+$ eval $(ast init bash)
 
 # zsh
-$ eval $(ast init - zsh)
+$ eval $(ast init zsh)
 
 # fish
-$ ast init - fish | source
+$ ast init fish | source
 
 # PowerShell
-$ ast init - ps | Invoke-Expression
+$ ast init pwsh | Invoke-Expression
 ```
 
 add a new function to asterisk:

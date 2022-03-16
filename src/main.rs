@@ -22,6 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         commands::SubCommand::Add(args) => commands::add::exec(args).await,
         commands::SubCommand::Edit(args) => commands::edit::exec(args).await,
         commands::SubCommand::Exec(args) => commands::exec::exec(args).await,
+        commands::SubCommand::Init(args) => commands::init::exec(args).await,
     };
 
     match result {
