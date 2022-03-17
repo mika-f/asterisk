@@ -4,10 +4,10 @@ Asterisk is command manager for command line.
 
 ## Features
 
-* add/remove/edit new functions in the shell
-* add/remove/edit new functions as alias to existing commands
-* conditional functions
-* pre/post hooks in commands
+- add/remove/edit new functions in the shell
+- add/remove/edit new functions as alias to existing commands
+- conditional functions
+- pre/post hooks in commands
 
 ## Installation
 
@@ -24,7 +24,6 @@ $ cargo build --release
 ```bash
 $ cargo install asterisk
 ```
-
 
 ## Usage
 
@@ -87,7 +86,6 @@ $ git clear
 ```
 
 ## License
-
 
 This project is licensed under either of
 
