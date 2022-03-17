@@ -2,6 +2,8 @@
 
 Asterisk is command manager for command line.
 
+![movie](https://user-images.githubusercontent.com/10832834/158797649-6045a65c-5ffe-465c-baaf-06db52558e2c.gif)
+
 ## Features
 
 - add/remove/edit new functions in the shell
