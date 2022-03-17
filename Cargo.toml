@@ -20,6 +20,7 @@ path = "src/main.rs"
 clap = {version = "3", features = ["suggestions", "color", "derive", "env"]}
 dirs = "4"
 inquire = {version = "0", features = ["editor"]}
+regex = "1"
 serde = {version = "1", features = ["derive"]}
 serde_derive = "1"
 strum = { version="0", features = ["derive"] }

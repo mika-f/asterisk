@@ -1,4 +1,5 @@
 use dirs;
+use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fs;
@@ -50,6 +51,21 @@ impl Function {
 
     pub fn get_command(&self) -> String {
         self.command.clone()
+    }
+
+    pub fn has_variable(&self) -> bool {
+        self.get_variables().len() > 0
+    }
+
+    pub fn get_variables(&self) -> Vec<String> {
+        let re = Regex::new(r"\$\{(?P<name>.*?)\}").unwrap();
+        let mut vec = Vec::new();
+
+        for cap in re.captures_iter(&self.get_command()) {
+            vec.push(cap.name("name").unwrap().as_str().to_owned());
+        }
+
+        vec
     }
 
     pub fn set_description(&mut self, description: Option<String>) -> () {
@@ -140,10 +156,44 @@ impl Function {
             }
         }
 
-        let mut run_command = vec![self.get_command().to_owned()];
-        run_command.extend(args);
+        let run_command = if self.has_variable() {
+            let mut command = self.get_command();
+            let mut parsed_args = Vec::<(String, String)>::new();
 
-        let s = shell.exec(&run_command.join(" "));
+            for arg in args {
+                if arg.starts_with("--") && arg.find("=").is_some() {
+                    let mut arg = arg.split("=");
+                    let key = arg.next().unwrap();
+                    let value = arg.next().unwrap();
+                    parsed_args.push((key[2..].to_owned(), value.to_owned()));
+                } else {
+                    parsed_args.push((arg.to_owned(), arg.to_owned()));
+                }
+            }
+
+            for variable in self.get_variables() {
+                let mut found = false;
+                for arg in parsed_args.iter() {
+                    if arg.0 == variable {
+                        command = command.replace(&format!("${{{}}}", variable), &arg.1);
+                        found = true;
+                    }
+                }
+
+                if !found {
+                    return Err(Error::CommandVariableNotFoundError(variable));
+                }
+            }
+
+            command
+        } else {
+            let mut run_command = vec![self.get_command().to_owned()];
+            run_command.extend(args);
+
+            run_command.join(" ")
+        };
+
+        let s = shell.exec(&run_command);
         if !s.is_ok() {
             return Err(Error::CommandExecutionFailureError(command));
         }

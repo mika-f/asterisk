@@ -10,6 +10,9 @@ pub enum Error {
     CommandNotFoundError(String),
 
     #[error("{0}")]
+    CommandVariableNotFoundError(String),
+
+    #[error("{0}")]
     CommandPreHookFailureError(String),
 
     #[error("{0}")]
