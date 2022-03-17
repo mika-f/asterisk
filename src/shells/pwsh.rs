@@ -3,7 +3,14 @@ use std::process::{Command, ExitStatus};
 use crate::error::{Error, Result};
 
 pub fn alias(left: &str, right: &str) -> Option<String> {
-    Some(format!("Set-Alias {} {}", left, right))
+    let mut alias = Vec::new();
+    alias.push(format!("Set-Variable -name AsteriskAlias_{left} -value \"function {left} {{ {right} `$args }}\" -scope global", left=left, right=right));
+    alias.push(format!(
+        "Get-Variable AsteriskAlias_{left} -ValueOnly | Invoke-Expression",
+        left = left
+    ));
+
+    Some(alias.join("\n"))
 }
 
 pub fn exec(command: &str) -> Result<ExitStatus> {
