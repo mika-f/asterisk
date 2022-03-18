@@ -14,11 +14,11 @@ pub fn alias(left: &str, right: &str) -> Option<String> {
 }
 
 #[cfg(target_os = "windows")]
-pub fn exec(command: &str) -> Result<ExitStatus> {
+pub fn exec(command: Vec<String>) -> Result<ExitStatus> {
     cmd::exec(command)
 }
 
 #[cfg(any(target_os = "macos", target_os = "linux"))]
-pub fn exec(command: &str) -> Result<ExitStatus> {
+pub fn exec(command: Vec<String>) -> Result<ExitStatus> {
     bash::exec(command)
 }

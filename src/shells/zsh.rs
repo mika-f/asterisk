@@ -6,8 +6,8 @@ pub fn alias(left: &str, right: &str) -> Option<String> {
     Some(format!("alias {}='{}'", left, right))
 }
 
-pub fn exec(command: &str) -> Result<ExitStatus> {
-    match Command::new("zsh").arg("-c").arg(command).status() {
+pub fn exec(command: Vec<String>) -> Result<ExitStatus> {
+    match Command::new("zsh").arg("-c").args(command).status() {
         Ok(status) => Ok(status),
         Err(e) => return Err(Error::CommandExecutionError(e)),
     }

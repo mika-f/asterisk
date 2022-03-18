@@ -23,7 +23,7 @@ pub async fn exec(args: Args) -> Result<()> {
             if args.extra.is_empty() {
                 // pass-through
                 let command = format!("{}", args.name);
-                match Shell::Default.exec(&command) {
+                match Shell::Default.exec(vec![command]) {
                     Ok(status) => exit(status.code().unwrap()),
                     Err(e) => return Err(e),
                 };
@@ -37,8 +37,11 @@ pub async fn exec(args: Args) -> Result<()> {
                 }
                 None => {
                     // pass-through commands to base
-                    let command = format!("{} {}", args.name, args.extra.join(" "));
-                    match Shell::Default.exec(&command) {
+                    let mut command = vec![];
+                    command.push(args.name);
+                    command.extend(args.extra);
+
+                    match Shell::Default.exec(command) {
                         Ok(status) => exit(status.code().unwrap()),
                         Err(e) => return Err(e),
                     };

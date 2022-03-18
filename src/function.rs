@@ -139,7 +139,7 @@ impl Function {
 
         if let Some(hooks) = self.get_hooks() {
             let r = match hooks.get_pre() {
-                Some(hook) => shell.exec(&hook).is_ok(),
+                Some(hook) => shell.exec(vec![hook]).is_ok(),
                 None => true,
             };
 
@@ -149,7 +149,7 @@ impl Function {
         }
 
         if let Some(condition) = self.get_condition() {
-            let r = shell.exec(&condition).is_ok();
+            let r = shell.exec(vec![condition]).is_ok();
 
             if !r {
                 return Err(Error::CommandConditionFailureError(command));
@@ -193,14 +193,14 @@ impl Function {
             run_command.join(" ")
         };
 
-        let s = shell.exec(&run_command);
+        let s = shell.exec(vec![run_command]);
         if !s.is_ok() {
             return Err(Error::CommandExecutionFailureError(command));
         }
 
         if let Some(hooks) = self.get_hooks() {
             let r = match hooks.get_post() {
-                Some(hook) => shell.exec(&hook).is_ok(),
+                Some(hook) => shell.exec(vec![hook]).is_ok(),
                 None => true,
             };
 

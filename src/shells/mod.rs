@@ -47,7 +47,7 @@ pub enum Shell {
 
 pub trait ShellExecutable {
     fn alias(&self, left: &str, right: &str) -> Option<String>;
-    fn exec(&self, command: &str) -> Result<ExitStatus>;
+    fn exec(&self, command: Vec<String>) -> Result<ExitStatus>;
 }
 
 impl ShellExecutable for Shell {
@@ -62,7 +62,7 @@ impl ShellExecutable for Shell {
         }
     }
 
-    fn exec(&self, command: &str) -> Result<ExitStatus> {
+    fn exec(&self, command: Vec<String>) -> Result<ExitStatus> {
         match self {
             Shell::Bash => bash::exec(command),
             Shell::Cmd => cmd::exec(command),
