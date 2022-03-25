@@ -39,9 +39,20 @@ pub async fn exec(args: Args) -> Result<()> {
                     // pass-through commands to base
                     let mut command = vec![];
                     command.push(args.name);
-                    command.extend(args.extra);
 
-                    match Shell::Default.exec(command) {
+                    let mut extras = vec![];
+                    for arg in args.extra.iter() {
+                        if arg.contains(' ') {
+                            extras.push(format!("\"{}\"", arg).to_owned());
+                        } else {
+                            extras.push(arg.to_owned());
+                        }
+                    }
+                    command.extend(extras);
+
+                    let command = command.join(" ");
+
+                    match Shell::Default.exec(vec![command]) {
                         Ok(status) => exit(status.code().unwrap()),
                         Err(e) => return Err(e),
                     };

@@ -8,6 +8,7 @@ Asterisk is command manager for command line.
 
 - add/remove/edit new functions in the shell
 - add/remove/edit new functions as alias to existing commands
+- add/remove/edit new functions within namespace
 - conditional functions
 - pre/post hooks in commands
 
@@ -27,7 +28,7 @@ $ cargo build --release
 $ cargo install asterisk
 ```
 
-## Usage
+## Basic Usage
 
 initialize or reload asterisk:
 
@@ -74,6 +75,11 @@ $ ast exec search
 $ search
 ```
 
+
+## Advanced Usage
+
+### Command Alias
+
 if you want to add a subcommands to existing commands:
 
 ```bash
@@ -85,6 +91,38 @@ $ exec -l $SHELL
 
 # execute with sub-command
 $ git clear
+```
+
+
+### Namespace
+
+if you want to add a subcommands into a new/existing namespace:
+
+```bash
+# add `jpy` sub-command into `ether` namespace
+$ ast add --wrap ether --name jpy --command ...
+
+# and reload asterisk
+$ exec -l $SHELL
+
+# execute with sub-command
+$ ether jpy
+```
+
+### Command-Line Named Arguments
+
+if you want to provide some arguments to functions:
+
+```bash
+# add `currency` arg into sub-command of `coin` namespace
+$ ast add --wrap coin --name pair \
+  --command 'curl -H "X-CMC_PRO_API_KEY: XXX" -s "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?slug=${currency}&convert=${fiat}" | jq "[.data][][].quote.${fiat}.price"'
+
+# reload asterisk
+$ exec -l $SHELL
+
+# execute with args
+$ coin pair --fiat=JPY --currency=ethereum
 ```
 
 ## License
