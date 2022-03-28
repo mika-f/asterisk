@@ -1,7 +1,7 @@
 use std::process::ExitStatus;
 
 use crate::error::Result;
-use crate::shells::{bash, cmd};
+use crate::shells::*;
 
 #[cfg(target_os = "windows")]
 pub fn alias(left: &str, right: &str) -> Option<String> {

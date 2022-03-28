@@ -1,5 +1,6 @@
 use clap::Parser;
-use std::process::exit;
+use std::os::unix::process::ExitStatusExt;
+use std::process::{exit, ExitStatus};
 
 use crate::error::Result;
 use crate::function::Functions;
@@ -24,7 +25,7 @@ pub async fn exec(args: Args) -> Result<()> {
                 // pass-through
                 let command = format!("{}", args.name);
                 match Shell::Default.exec(vec![command]) {
-                    Ok(status) => exit(status.code().unwrap()),
+                    Ok(status) => safe_exit(status),
                     Err(e) => return Err(e),
                 };
             }
@@ -53,7 +54,7 @@ pub async fn exec(args: Args) -> Result<()> {
                     let command = command.join(" ");
 
                     match Shell::Default.exec(vec![command]) {
-                        Ok(status) => exit(status.code().unwrap()),
+                        Ok(status) => safe_exit(status),
                         Err(e) => return Err(e),
                     };
                 }
@@ -62,4 +63,20 @@ pub async fn exec(args: Args) -> Result<()> {
     };
 
     function.execute(args.extra[splice..].to_vec()).await
+}
+
+#[cfg(target_os = "windows")]
+fn safe_exit(status: ExitStatus) -> ! {
+    match status.code() {
+        Some(status) => exit(status),
+        None => unreachable!(),
+    }
+}
+
+#[cfg(any(target_os = "macos", target_os = "linux"))]
+fn safe_exit(status: ExitStatus) -> ! {
+    match status.code() {
+        Some(status) => exit(status),
+        None => exit(status.signal().unwrap()),
+    }
 }
