@@ -125,6 +125,25 @@ $ exec -l $SHELL
 $ coin pair --fiat=JPY --currency=ethereum
 ```
 
+
+## Interactive Execution
+
+if you want to execute some functions in interactive shell, please use `ast init fish --interactive` for initialization.  
+this initialize command shows interactive gui when executing asterisk commands.
+for example, `coin pair` commands in above is execute as:
+
+```
+$ coin pair
+```
+
+and input arguments in interactive gui.  
+if you want to enable interactive mode partially, use `--use-interactive` option in register functions.
+
+```
+$ ast add --wrap coin --name pair --command ... --use-interactive
+```
+
+
 ## License
 
 This project is licensed under either of
