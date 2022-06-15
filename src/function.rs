@@ -278,7 +278,7 @@ impl Functions {
     pub fn get(&self, name: &str) -> Option<&Function> {
         self.functions
             .iter()
-            .find(|f| f.get_name() == name || f.get_wrap() == None)
+            .find(|f| f.get_name() == name && f.get_wrap() == None)
     }
 
     pub fn get_wrap(&self, name: &str, wrap: &str) -> Option<&Function> {
